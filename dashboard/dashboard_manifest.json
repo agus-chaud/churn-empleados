@@ -1,0 +1,18 @@
+{
+  "title": "Churn Empleados - Dashboard",
+  "version": "1.0",
+  "pages": [
+    "1_Resumen_modelo",
+    "2_Resumen_ejecutivo",
+    "3_Riesgo_por_segmento",
+    "4_Distribucion_scoring",
+    "5_Scoring_y_datos"
+  ],
+  "data_sources": [
+    "artifacts/modeling/experiment_manifest.json",
+    "artifacts/modeling/df_con_scoring.pkl",
+    "artifacts/modeling/pipeline.pkl",
+    "artifacts/modeling/best_model.pkl"
+  ],
+  "design_doc": "docs/plans/2026-02-15-dashboard-churn-design.md"
+}

@@ -2,3 +2,21 @@
 TPS_Dia_1_Configuracion.ipynb
 TPS_Dia_2_Business_Analytics.ipynb
 TPS_Dia_3_Machine_Learning copy.ipynb
+
+# Dashboard: credenciales (nunca versionar)
+dashboard/.streamlit/secrets.toml
+.streamlit/secrets.toml
+secrets.toml
+
+# Rules y agentes (no subir a GitHub)
+.cursor/
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+
+# Temporales y datos pesados
+debug.log
+nul
+*.zip
