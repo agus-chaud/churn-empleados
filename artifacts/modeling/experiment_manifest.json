@@ -1,0 +1,256 @@
+{
+  "stage": "modeling",
+  "run_id": "churn-empleados-xgboost-smote",
+  "created_at": "2026-02-14T12:00:00",
+  "model_type": "xgboost_smote",
+  "model_path": "artifacts/modeling/best_model.pkl",
+  "problem_type": "classification",
+  "target_column": "abandono",
+  "target_labels": {
+    "0": "No",
+    "1": "Yes"
+  },
+  "feature_columns": [
+    "edad",
+    "distancia_casa",
+    "nivel_acciones",
+    "anos_experiencia",
+    "num_formaciones_ult_ano",
+    "anos_compania",
+    "anos_desde_ult_promocion",
+    "anos_con_manager_actual",
+    "salario_ano",
+    "ratio_estancamiento",
+    "indice_satisfaccion",
+    "nunca_promovido",
+    "ratio_formacion",
+    "viajes",
+    "departamento",
+    "educacion",
+    "carrera",
+    "estado_civil",
+    "puesto",
+    "horas_extra"
+  ],
+  "input_schema": {
+    "description": "Objeto JSON con una clave por cada elemento de feature_columns (números o strings según corresponda)."
+  },
+  "output_schema": {
+    "predict_proba": {
+      "description": "Probabilidad de abandono (clase 1)",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "predict_class": {
+      "description": "Clase predicha (0 = No abandono, 1 = Abandono) usando umbral optimizado",
+      "type": "integer",
+      "enum": [
+        0,
+        1
+      ]
+    }
+  },
+  "best_model": {
+    "model_type": "xgboost_smote",
+    "description": "XGBoost con SMOTE (Pipeline imblearn: SMOTE solo en train). Entrada del modelo: datos ya transformados por ColumnTransformer (preprocessor).",
+    "path": "artifacts/modeling/best_model.pkl",
+    "pipeline_path": "artifacts/modeling/pipeline.pkl",
+    "preprocessor_path": "artifacts/modeling/preprocessor.pkl",
+    "metrics": {
+      "aupr": 0.4202,
+      "f1_score": null,
+      "precision": null,
+      "recall": null,
+      "roc_auc": null
+    },
+    "best_params": {
+      "clf__n_estimators": "best from RandomizedSearchCV",
+      "clf__max_depth": "best from RandomizedSearchCV",
+      "clf__learning_rate": "best from RandomizedSearchCV",
+      "clf__subsample": "best from RandomizedSearchCV",
+      "clf__colsample_bytree": "best from RandomizedSearchCV",
+      "clf__min_child_weight": "best from RandomizedSearchCV"
+    },
+    "optimization": {
+      "method": "randomized_search",
+      "n_iter": "N_ITER_SMOTE",
+      "cv": "CV_SMOTE",
+      "scoring": "average_precision"
+    },
+    "threshold_optimized": "best_umbral_smote_xgb (F1 en validación)",
+    "feature_importances": [
+      {
+        "variable": "num__edad",
+        "importancia": 0.024322083219885826
+      },
+      {
+        "variable": "num__distancia_casa",
+        "importancia": 0.017143212258815765
+      },
+      {
+        "variable": "num__nivel_acciones",
+        "importancia": 0.04200206324458122
+      },
+      {
+        "variable": "num__anos_experiencia",
+        "importancia": 0.03528347238898277
+      },
+      {
+        "variable": "num__num_formaciones_ult_ano",
+        "importancia": 0.018944408744573593
+      },
+      {
+        "variable": "num__anos_compania",
+        "importancia": 0.021078918129205704
+      },
+      {
+        "variable": "num__anos_desde_ult_promocion",
+        "importancia": 0.01920977793633938
+      },
+      {
+        "variable": "num__anos_con_manager_actual",
+        "importancia": 0.04841463267803192
+      },
+      {
+        "variable": "cat__viajes_Non-Travel",
+        "importancia": 0.024617454037070274
+      },
+      {
+        "variable": "cat__viajes_Travel_Frequently",
+        "importancia": 0.03177236020565033
+      },
+      {
+        "variable": "cat__viajes_Travel_Rarely",
+        "importancia": 0.02070588804781437
+      },
+      {
+        "variable": "cat__departamento_Human Resources",
+        "importancia": 0.0022943068761378527
+      },
+      {
+        "variable": "cat__departamento_Research & Development",
+        "importancia": 0.02353890798985958
+      },
+      {
+        "variable": "cat__departamento_Sales",
+        "importancia": 0.037606604397296906
+      },
+      {
+        "variable": "cat__educacion_Master",
+        "importancia": 0.024630416184663773
+      },
+      {
+        "variable": "cat__educacion_Primaria",
+        "importancia": 0.01182186882942915
+      },
+      {
+        "variable": "cat__educacion_Secundaria",
+        "importancia": 0.03013629838824272
+      },
+      {
+        "variable": "cat__educacion_Universitaria",
+        "importancia": 0.0163150355219841
+      },
+      {
+        "variable": "cat__educacion_nan",
+        "importancia": 0.014600942842662334
+      },
+      {
+        "variable": "cat__carrera_Human Resources",
+        "importancia": 0.027273651212453842
+      },
+      {
+        "variable": "cat__carrera_Life Sciences",
+        "importancia": 0.031371939927339554
+      },
+      {
+        "variable": "cat__carrera_Marketing",
+        "importancia": 0.014915269799530506
+      },
+      {
+        "variable": "cat__carrera_Medical",
+        "importancia": 0.013990729115903378
+      },
+      {
+        "variable": "cat__carrera_Other",
+        "importancia": 0.01181515771895647
+      },
+      {
+        "variable": "cat__carrera_Technical Degree",
+        "importancia": 0.03338763862848282
+      },
+      {
+        "variable": "cat__estado_civil_Divorced",
+        "importancia": 0.026154279708862305
+      },
+      {
+        "variable": "cat__estado_civil_Married",
+        "importancia": 0.016690252348780632
+      },
+      {
+        "variable": "cat__estado_civil_Single",
+        "importancia": 0.02686762437224388
+      },
+      {
+        "variable": "cat__puesto_Healthcare Representative",
+        "importancia": 0.031697072088718414
+      },
+      {
+        "variable": "cat__puesto_Human Resources",
+        "importancia": 0.011268451809883118
+      },
+      {
+        "variable": "cat__puesto_Laboratory Technician",
+        "importancia": 0.024141931906342506
+      },
+      {
+        "variable": "cat__puesto_Manager",
+        "importancia": 0.01843666099011898
+      },
+      {
+        "variable": "cat__puesto_Manufacturing Director",
+        "importancia": 0.020214304327964783
+      },
+      {
+        "variable": "cat__puesto_Research Director",
+        "importancia": 0.019496900960803032
+      },
+      {
+        "variable": "cat__puesto_Research Scientist",
+        "importancia": 0.023557497188448906
+      },
+      {
+        "variable": "cat__puesto_Sales Executive",
+        "importancia": 0.017184508964419365
+      },
+      {
+        "variable": "cat__puesto_Sales Representative",
+        "importancia": 0.033905480057001114
+      },
+      {
+        "variable": "cat__horas_extra_No",
+        "importancia": 0.13319197297096252
+      },
+      {
+        "variable": "cat__horas_extra_Yes",
+        "importancia": 0.0
+      }
+    ]
+  },
+  "models_tested": [
+    {
+      "model_type": "random_forest_smote",
+      "aupr": 0.4262
+    },
+    {
+      "model_type": "xgboost_smote",
+      "aupr": 0.4202
+    },
+    {
+      "model_type": "lightgbm_smote",
+      "aupr": 0.4118
+    }
+  ],
+  "notes": "feature_columns debe coincidir con num_cols + cat_cols del notebook Churn-empleados (orden: numéricas luego categóricas). El pipeline guardado (best_model.pkl) es ImbPipeline(SMOTE, XGBClassifier). Para predicción en producción: 1) Aplicar preprocessor a los datos crudos; 2) Llamar pipeline.predict_proba(X_transformed)[:, 1]. Actualizar metrics con los valores devueltos por evaluar_clasificador si se re-ejecuta el notebook."
+}
