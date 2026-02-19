@@ -1,6 +1,8 @@
 # Churn de empleados – Predicción y dashboard
 
-Proyecto de **detección y priorización del riesgo de abandono (churn)** en la plantilla. Incluye un notebook de análisis y modelado (XGBoost + SMOTE) y un dashboard Streamlit con login para explorar scoring, KPIs y candidatos a retención.
+Proyecto de **detección y priorización del riesgo de abandono (churn)** de los empleados. Incluye un notebook con un modelo predictivo y un dashboard Streamlit con login para explorar scoring, KPIs y candidatos a retención.
+
+**Ver el dashboard en vivo:** [https://churn-empleados.streamlit.app/Resumen_ejecutivo](https://churn-empleados.streamlit.app/Resumen_ejecutivo) (requiere iniciar sesión).
 
 ---
 
@@ -8,7 +10,7 @@ Proyecto de **detección y priorización del riesgo de abandono (churn)** en la 
 
 **Problema:** Identificar qué empleados tienen mayor probabilidad de abandonar la empresa para poder actuar con tiempo (retención, ofertas, seguimiento) y priorizar recursos.
 
-**Objetivo:** Entregar un modelo de predicción de churn con probabilidad (scoring) por empleado, métricas de evaluación adecuadas a clase desbalanceada (AUPR), y un dashboard que permita a RRHH/gestores filtrar por departamento, antigüedad y satisfacción, ver KPIs y bandas de riesgo, y exportar la lista priorizada de candidatos a retención.
+**Objetivo:** Entregar un modelo de predicción de churn con probabilidad (scoring) por empleado, métricas de evaluación adecuadas a clase desbalanceada (AUPR), y un dashboard que permita  filtrar por departamento, antigüedad y satisfacción, ver KPIs y bandas de riesgo, y exportar la lista priorizada de candidatos a retención.
 
 ---
 
@@ -36,7 +38,7 @@ Proyecto de **detección y priorización del riesgo de abandono (churn)** en la 
 
 ## Principales desafíos y cómo se solucionaron
 
-- **Clase desbalanceada:** Uso de SMOTE en el pipeline de entrenamiento y métrica AUPR para evaluar el modelo sin que el desbalance domine.
+- **Clase desbalanceada:** Uso de SMOTE en el pipeline de entrenamiento y métrica AUPR para evaluar el modelo sin que el desbalance predomine.
 - **Coste de falsos positivos:** Elección de XGBoost (SMOTE) frente a LightGBM por menor número de FP (57 vs 90) manteniendo TP razonables, reduciendo coste operativo de intervenciones innecesarias.
 - **Rendimiento del dashboard:** Caché de la tabla preparada en “Scoring y datos” (`@st.cache_data`) y cálculo de bandas/estilos vectorizado con NumPy para acelerar la carga.
 
@@ -45,7 +47,6 @@ Proyecto de **detección y priorización del riesgo de abandono (churn)** en la 
 ## Futuras mejoras
 
 - Cuantificar de forma explícita el coste de un FP y el beneficio de un TP (en horas o dinero) para definir un umbral óptimo que maximice el valor esperado.
-- Despliegue en Streamlit Cloud (o similar) con secrets en la nube y, si se desea, generación de artefactos vía CI antes del deploy.
 
 ---
 
