@@ -21,7 +21,7 @@
 2. **Artefactos:** Para ver todas las secciones (Resumen Ejecutivo, Riesgo por segmento, etc.) necesita:
    - `artifacts/modeling/experiment_manifest.json` (obligatorio)
    - `artifacts/modeling/df_con_scoring.pkl` (recomendado; DataFrame con columna `scoring_abandono` y columnas como `departamento`, `anos_compania`, `satisfaccion_entorno`)
-   - Para el **gráfico de importancia de variables** (Resumen del modelo): el dashboard puede obtener las importancias de dos formas:
+   - Para el **gráfico de importancia de variables** (Resumen ejecutivo): el dashboard puede obtener las importancias de dos formas:
      - Cargando `artifacts/modeling/best_model.pkl` (o `pipeline.pkl`) y, si existe, `artifacts/modeling/preprocessor.pkl` para los nombres de las variables.
      - O leyendo `feature_importances` desde el manifest (lista de `{variable, importancia}` dentro de `best_model` o en la raíz del JSON). Si el manifest ya incluye esa clave, el gráfico se muestra sin necesidad de los `.pkl`.
 
@@ -93,10 +93,8 @@ dashboard/
 ├── app.py
 ├── common.py
 ├── pages/
-│   ├── 1_Resumen_modelo.py
 │   ├── 2_Resumen_ejecutivo.py
-│   ├── 3_Riesgo_por_segmento.py
-│   ├── 4_Distribucion_scoring.py
+│   ├── 3_Distribucion_y_riesgo.py
 │   └── 5_Scoring_y_datos.py
 ├── .streamlit/
 │   └── config.toml

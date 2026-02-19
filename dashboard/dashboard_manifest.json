@@ -2,10 +2,8 @@
   "title": "Churn Empleados - Dashboard",
   "version": "1.0",
   "pages": [
-    "1_Resumen_modelo",
     "2_Resumen_ejecutivo",
-    "3_Riesgo_por_segmento",
-    "4_Distribucion_scoring",
+    "3_Distribucion_y_riesgo",
     "5_Scoring_y_datos"
   ],
   "data_sources": [
