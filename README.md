@@ -2,7 +2,7 @@
 
 Proyecto de **detección y priorización del riesgo de abandono (churn)** de los empleados. Incluye un notebook con un modelo predictivo y un dashboard Streamlit con login para explorar scoring, KPIs y candidatos a retención.
 
-**Ver el dashboard en vivo:** [https://churn-empleados.streamlit.app/Resumen_ejecutivo](https://churn-empleados.streamlit.app/Resumen_ejecutivo) (requiere iniciar sesión).
+**Ver el dashboard en vivo:** [https://churn-empleados.streamlit.app/Resumen_ejecutivo](https://churn-empleados.streamlit.app/Resumen_ejecutivo) (user: agus , password: streamlit).
 
 ---
 
@@ -10,7 +10,7 @@ Proyecto de **detección y priorización del riesgo de abandono (churn)** de los
 
 **Problema:** Identificar qué empleados tienen mayor probabilidad de abandonar la empresa para poder actuar con tiempo (retención, ofertas, seguimiento) y priorizar recursos.
 
-**Objetivo:** Entregar un modelo de predicción de churn con probabilidad (scoring) por empleado, métricas de evaluación adecuadas a clase desbalanceada (AUPR), y un dashboard que permita  filtrar por departamento, antigüedad y satisfacción, ver KPIs y bandas de riesgo, y exportar la lista priorizada de candidatos a retención.
+**Objetivo:** Entregar un modelo de predicción de churn con probabilidad (scoring) por empleado, métricas de evaluación adecuadas a clase desbalanceada (AUPR), y un dashboard que permita  filtrar por departamento, antigüedad y satisfacción, ver KPIs y bandas de riesgo.
 
 ---
 
