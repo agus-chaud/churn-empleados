@@ -12,6 +12,7 @@ from common import (
     get_preprocessor,
     render_sidebar_filters,
     get_df_filtrado,
+    get_umbrales_riesgo,
     SCORING_COL,
 )
 
@@ -30,16 +31,17 @@ if SCORING_COL not in df.columns:
     st.error("El DataFrame no tiene la columna de scoring.")
     st.stop()
 
+th_low, th_high = get_umbrales_riesgo()
 total = len(df)
-alto = (df[SCORING_COL] >= 0.5).sum()
-medio = ((df[SCORING_COL] >= 0.3) & (df[SCORING_COL] < 0.5)).sum()
-bajo = (df[SCORING_COL] < 0.3).sum()
+alto = (df[SCORING_COL] >= th_high).sum()
+medio = ((df[SCORING_COL] >= th_low) & (df[SCORING_COL] < th_high)).sum()
+bajo = (df[SCORING_COL] < th_low).sum()
 pct_alto = (alto / total * 100) if total else 0
 
 # Impacto abandono solo para alto riesgo
 impacto_alto_riesgo = None
 if "impacto_abandono" in df.columns:
-    impacto_alto_riesgo = df.loc[df[SCORING_COL] >= 0.5, "impacto_abandono"].sum()
+    impacto_alto_riesgo = df.loc[df[SCORING_COL] >= th_high, "impacto_abandono"].sum()
 
 # Riesgo promedio (scoring medio)
 riesgo_promedio = df[SCORING_COL].mean()
@@ -47,7 +49,7 @@ riesgo_promedio = df[SCORING_COL].mean()
 # Departamento con más riesgo (% en alto riesgo)
 depto_mas_riesgo = None
 if "departamento" in df.columns and total > 0:
-    pct_alto_por_dept = df.groupby("departamento", dropna=False)[SCORING_COL].apply(lambda s: (s >= 0.5).mean() * 100)
+    pct_alto_por_dept = df.groupby("departamento", dropna=False)[SCORING_COL].apply(lambda s: (s >= th_high).mean() * 100)
     if len(pct_alto_por_dept) > 0:
         depto_mas_riesgo = pct_alto_por_dept.idxmax()
 
@@ -55,8 +57,8 @@ if "departamento" in df.columns and total > 0:
 st.subheader("KPIs")
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Total empleados", total)
-c2.metric("Alto riesgo (≥0.5)", alto)
-c3.metric("Riesgo medio (0.3–0.5)", medio)
+c2.metric(f"Alto riesgo (≥{th_high})", alto)
+c3.metric(f"Riesgo medio ({th_low}–{th_high})", medio)
 c4.metric("% en alto riesgo", f"{pct_alto:.1f}%")
 
 r1, r2, r3 = st.columns(3)
@@ -70,7 +72,7 @@ col_bandas, col_imp = st.columns(2)
 
 with col_bandas:
     df_bandas = pd.DataFrame({
-        "Banda": ["Bajo (<0.3)", "Riesgo medio (0.3–0.5)", "Alto (≥0.5)"],
+        "Banda": [f"Bajo (<{th_low})", f"Riesgo medio ({th_low}–{th_high})", f"Alto (≥{th_high})"],
         "Empleados": [bajo, medio, alto],
     })
     fig_bandas = px.bar(df_bandas, x="Banda", y="Empleados", color="Empleados", color_continuous_scale="Blues")
@@ -138,18 +140,3 @@ with col_imp:
             "Para ver el gráfico de importancia, guarde pipeline.pkl (y preprocessor.pkl) en artifacts/modeling/ desde el notebook, "
             "o ejecute **scripts/export_model_artifacts.py**."
         )
-
-# Costos de intervención
-st.subheader("Costos de intervención")
-umbral_default = 0.5
-if manifest and manifest.get("best_model"):
-    th_opt = manifest["best_model"].get("threshold_optimized")
-    if th_opt and isinstance(th_opt, (int, float)):
-        umbral_default = float(th_opt)
-umbral = st.slider("Umbral de intervención (scoring ≥ este valor)", 0.0, 1.0, umbral_default, 0.05)
-seleccionados = (df[SCORING_COL] >= umbral).sum()
-if manifest and manifest.get("best_model", {}).get("metrics", {}).get("aupr"):
-    st.caption("Precisión exacta en este umbral requiere curva Precision-Recall; use AUPR del modelo como referencia.")
-st.metric("Empleados que serían seleccionados (scoring ≥ umbral)", seleccionados)
-if total:
-    st.caption(f"Representa {seleccionados/total*100:.1f}% del total filtrado.")

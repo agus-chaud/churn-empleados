@@ -102,12 +102,25 @@ def _init_session_state():
         st.session_state.filter_departamentos = []
     if "filter_banda" not in st.session_state:
         st.session_state.filter_banda = "Todos"
+    if "filter_umbral_alto" not in st.session_state:
+        st.session_state.filter_umbral_alto = 0.5
+    if "filter_umbral_medio" not in st.session_state:
+        st.session_state.filter_umbral_medio = 0.3
     if "filter_anos_min" not in st.session_state:
         st.session_state.filter_anos_min = None
     if "filter_anos_max" not in st.session_state:
         st.session_state.filter_anos_max = None
     if "filter_satisfaccion" not in st.session_state:
         st.session_state.filter_satisfaccion = []
+
+
+def get_umbrales_riesgo():
+    """Devuelve (umbral_medio, umbral_alto) para bandas Bajo/Medio/Alto, con medio <= alto."""
+    th_medio = st.session_state.get("filter_umbral_medio", 0.3)
+    th_alto = st.session_state.get("filter_umbral_alto", 0.5)
+    th_low = min(th_medio, th_alto)
+    th_high = max(th_medio, th_alto)
+    return th_low, th_high
 
 
 def render_sidebar_filters(df: pd.DataFrame | None):
@@ -137,8 +150,29 @@ def render_sidebar_filters(df: pd.DataFrame | None):
         placeholder="Todos",
     )
     st.session_state.filter_departamentos = sel_dep
-    # Banda de scoring
-    bandas_opts = ["Todos", "Alto riesgo (≥0.5)", "Riesgo medio (0.3–0.5)", "Bajo (<0.3)"]
+    # Umbrales de riesgo (compartidos por todas las solapas)
+    th_low, th_high = get_umbrales_riesgo()
+    st.sidebar.slider(
+        "Umbral alto riesgo (≥)",
+        0.0, 1.0,
+        value=float(st.session_state.filter_umbral_alto),
+        step=0.05,
+        key="slider_umbral_alto",
+        help="Scoring ≥ este valor = Alto riesgo. Afecta KPIs y gráficos en todas las solapas.",
+    )
+    st.session_state.filter_umbral_alto = st.session_state.get("slider_umbral_alto", 0.5)
+    st.sidebar.slider(
+        "Umbral riesgo medio (≥)",
+        0.0, 1.0,
+        value=float(st.session_state.filter_umbral_medio),
+        step=0.05,
+        key="slider_umbral_medio",
+        help="Scoring ≥ este valor = al menos Riesgo medio. Por debajo = Bajo. Afecta todas las solapas.",
+    )
+    st.session_state.filter_umbral_medio = st.session_state.get("slider_umbral_medio", 0.3)
+    th_low, th_high = get_umbrales_riesgo()
+    # Banda de scoring (opciones dinámicas según umbrales)
+    bandas_opts = ["Todos", f"Alto riesgo (≥{th_high})", f"Riesgo medio ({th_low}–{th_high})", f"Bajo (<{th_low})"]
     idx = bandas_opts.index(st.session_state.filter_banda) if st.session_state.filter_banda in bandas_opts else 0
     banda = st.sidebar.selectbox("Banda de scoring", options=bandas_opts, index=idx)
     st.session_state.filter_banda = banda
@@ -183,13 +217,14 @@ def get_df_filtrado(df: pd.DataFrame | None) -> pd.DataFrame | None:
     if st.session_state.filter_departamentos and "departamento" in out.columns:
         out = out[out["departamento"].astype(str).isin(st.session_state.filter_departamentos)]
     if SCORING_COL in out.columns:
+        th_low, th_high = get_umbrales_riesgo()
         banda = st.session_state.get("filter_banda", "Todos")
-        if banda == "Alto riesgo (≥0.5)":
-            out = out[out[SCORING_COL] >= 0.5]
-        elif banda == "Riesgo medio (0.3–0.5)":
-            out = out[out[SCORING_COL].ge(0.3) & out[SCORING_COL].lt(0.5)]
-        elif banda == "Bajo (<0.3)":
-            out = out[out[SCORING_COL] < 0.3]
+        if banda == f"Alto riesgo (≥{th_high})":
+            out = out[out[SCORING_COL] >= th_high]
+        elif banda == f"Riesgo medio ({th_low}–{th_high})":
+            out = out[out[SCORING_COL].ge(th_low) & out[SCORING_COL].lt(th_high)]
+        elif banda == f"Bajo (<{th_low})":
+            out = out[out[SCORING_COL] < th_low]
     if "anos_compania" in out.columns:
         a_min = st.session_state.get("filter_anos_min")
         a_max = st.session_state.get("filter_anos_max")
